@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\product;
+use Carbon\Carbon;
 use GrahamCampbell\ResultType\Success;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -10,6 +11,8 @@ use Illuminate\Support\Facades\Validator;
 
 class Productcontroller extends Controller
 {
+    protected $dateFormat = 'd/m/Y';
+
     public function product(){
         $products = Product::all();
         return view('welcome', ['products' => $products]);

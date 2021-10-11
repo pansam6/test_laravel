@@ -110,7 +110,7 @@
                     <th>{{$product->id}}</th>
                     <td>{{$product->name}}</td>
                     <td>{{$product->price}}</td>
-                    <td>{{$product->date}}</td>
+                    <td >{{$product->date}}</td>
                     <td>{{$product->updated_at}}</td>
                     <td><button type="button" class="btn btn-success" onclick="edit_product({{$product->id}})" data-bs-toggle="modal" data-bs-target="#editModal">Edit</button></td>
                 </tr>
@@ -160,7 +160,6 @@
             let name = $('#insert_name').val();
             let price = $('#insert_price').val();
             let date = $('#insert_date').val();
-            let status = $('#status').val();
             $.ajax({
                 url :  "/add_product",
                 type : "POST",
@@ -168,23 +167,27 @@
                     name: name,
                     price: price,
                     date: date,
-                    status:status
+                    status: 1
                 },
                 success : function(res) {
                     console.log(res)
-                    if(res = 1) {
-                        console.log(',kkkk')
+                    if(res == 1) {
+                        console.log("res == 1")
                         $('#add_error').css("display", "");
                     } else {
+                        console.log("else")
                         add_product()
-                        $('input').val('');
+                        // $('.alert').hide();
+                        console.log($('.alert'))
+                        $('#insert_name').val('');
+                        $('#insert_price').val('');
+                        $('#insert_date').val('');
                         $('.modal').modal('hide'),
                         Swal.fire('Good job!','You clicked the button!','success')
                     };
+                    console.log(res)
                 }
-
             });
-
         }
 
         function edit_product(id) {
@@ -248,8 +251,6 @@
         }
 
         $(document).ready(function() {
-
-            $('#insert_name').validate
 
             $('#select_all').on('click', function() {
                 console.log(this)
