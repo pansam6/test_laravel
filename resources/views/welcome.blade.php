@@ -21,6 +21,10 @@
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
                 <div class="modal-body">
+                    <div class="alert alert-danger" role="alert" id="add_error" style="display: none">
+                        กรุณากรอกข้อมูลให้ครบ
+                    </div>
+                    <input type="text" style="display: none"  id="status" value="1">
                     <div class="mb-3">
                         <label  class="form-label">Name Product</label>
                         <input type="text" class="form-control" id="insert_name" value="" >
@@ -31,7 +35,7 @@
                     </div>
                     <div class="mb-3">
                         <label  class="form-label">Date</label>
-                        <input type="date" class="form-control" id="insert_date" value="">
+                        <input type="date" class="form-control"  id="insert_date" value="">
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -41,6 +45,7 @@
         </div>
         </div>
     </div>
+
     <!-- Edit Modal -->
     <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -84,10 +89,12 @@
                         <label class="form-check-label">Delete All</label>
                     </div>
                 </th>
+                <th scope="col">status</th>
                 <th scope="col">ID</th>
                 <th scope="col">Name</th>
                 <th scope="col">Price</th>
-                <th scope="col">date</th>
+                <th scope="col">Date</th>
+                <th scope="col">Date update</th>
                 <th scope="col">Edit</th>
             </tr>
             </thead>
@@ -99,10 +106,12 @@
                             <input class="checkbox form-check-input" type="checkbox" id="checkbox_dalete" value="{{$product->id}}">
                         </div>
                     </th>
+                    <th>{{$product->status}}</th>
                     <th>{{$product->id}}</th>
                     <td>{{$product->name}}</td>
                     <td>{{$product->price}}</td>
                     <td>{{$product->date}}</td>
+                    <td>{{$product->updated_at}}</td>
                     <td><button type="button" class="btn btn-success" onclick="edit_product({{$product->id}})" data-bs-toggle="modal" data-bs-target="#editModal">Edit</button></td>
                 </tr>
                 @endforeach
@@ -133,10 +142,12 @@
                                     <input class="checkbox form-check-input" type="checkbox" name="check[]" value="${x.id}">
                                 </div>
                             </th>
+                            <th>${x.status}</th>
                             <th>${x.id}</th>
                             <td>${x.name}</td>
                             <td>${x.price}</td>
                             <td>${x.date}</td>
+                            <td>${x.updated_at}</td>
                             <td><button type="button" class="btn btn-success" onclick="edit_product(${x.id})" data-bs-toggle="modal" data-bs-target="#editModal">Edit</button></td>
                         </tr>
                         `)
@@ -149,6 +160,7 @@
             let name = $('#insert_name').val();
             let price = $('#insert_price').val();
             let date = $('#insert_date').val();
+            let status = $('#status').val();
             $.ajax({
                 url :  "/add_product",
                 type : "POST",
@@ -156,14 +168,23 @@
                     name: name,
                     price: price,
                     date: date,
+                    status:status
                 },
-                success : function() {
-                    add_product()
+                success : function(res) {
+                    console.log(res)
+                    if(res = 1) {
+                        console.log(',kkkk')
+                        $('#add_error').css("display", "");
+                    } else {
+                        add_product()
+                        $('input').val('');
+                        $('.modal').modal('hide'),
+                        Swal.fire('Good job!','You clicked the button!','success')
+                    };
                 }
+
             });
-            $('input').val('');
-            $('.modal').modal('hide'),
-            Swal.fire('Good job!','You clicked the button!','success')
+
         }
 
         function edit_product(id) {
@@ -192,10 +213,11 @@
                 },
                 success : function() {
                     add_product()
+                    $('.modal').modal('hide'),
+                     Swal.fire('Good job!','You clicked the button!','success')
                 }
             })
-            $('.modal').modal('hide'),
-            Swal.fire('Good job!','You clicked the button!','success')
+
         }
 
         function delete_product() {
@@ -203,7 +225,6 @@
             let filterProduct = products.filter((i, el) => {
                 return el.checked == true
             })
-
             let array = []
             for(fil of filterProduct) {
                 array.push(fil.value)
@@ -227,6 +248,8 @@
         }
 
         $(document).ready(function() {
+
+            $('#insert_name').validate
 
             $('#select_all').on('click', function() {
                 console.log(this)
