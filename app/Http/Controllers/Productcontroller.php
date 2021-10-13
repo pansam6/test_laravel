@@ -11,7 +11,6 @@ use Illuminate\Support\Facades\Validator;
 
 class Productcontroller extends Controller
 {
-    protected $dateFormat = 'd/m/Y';
 
     public function product(){
         $products = Product::all();
@@ -37,11 +36,11 @@ class Productcontroller extends Controller
             $product->name = $request->name;
             $product->price = $request->price;
             $product->date = $request->date;
+            $product->date_update = $request->date_update;
             $product->status = $request->status;
             $product->save();
             return $product;
         }
-
 
     }
 
@@ -74,6 +73,7 @@ class Productcontroller extends Controller
         $product->name = $request->name;
         $product->price = $request->price;
         $product->date = $request->date;
+        $product->date_update = $request->date_update;
         $product->save();
         return 1;
     }

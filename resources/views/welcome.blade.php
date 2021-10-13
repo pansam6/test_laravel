@@ -24,7 +24,6 @@
                     <div class="alert alert-danger" role="alert" id="add_error" style="display: none">
                         กรุณากรอกข้อมูลให้ครบ
                     </div>
-                    <input type="text" style="display: none"  id="status" value="1">
                     <div class="mb-3">
                         <label  class="form-label">Name Product</label>
                         <input type="text" class="form-control" id="insert_name" value="" >
@@ -110,8 +109,9 @@
                     <th>{{$product->id}}</th>
                     <td>{{$product->name}}</td>
                     <td>{{$product->price}}</td>
-                    <td >{{$product->date}}</td>
-                    <td>{{$product->updated_at}}</td>
+                    <td >{{ \Carbon\Carbon::now()->toDateString() }}</td>
+                    {{-- date('d/m/Y', strtotime($product->date)) --}}
+                    <td>{{$product->date_update}}</td>
                     <td><button type="button" class="btn btn-success" onclick="edit_product({{$product->id}})" data-bs-toggle="modal" data-bs-target="#editModal">Edit</button></td>
                 </tr>
                 @endforeach
@@ -135,6 +135,7 @@
                     console.log(res)
                     $('table tbody').empty()
                     for (let x of res) {
+                        let date = new Date(x.date)
                         $('table tbody').append(`
                         <tr>
                             <th>
@@ -146,8 +147,8 @@
                             <th>${x.id}</th>
                             <td>${x.name}</td>
                             <td>${x.price}</td>
-                            <td>${x.date}</td>
-                            <td>${x.updated_at}</td>
+                            <td>${date.getDate()}/${date.getMonth()+1}/${date.getFullYear()+543}</td>
+                            <td>${x.date_update}</td>
                             <td><button type="button" class="btn btn-success" onclick="edit_product(${x.id})" data-bs-toggle="modal" data-bs-target="#editModal">Edit</button></td>
                         </tr>
                         `)
@@ -167,7 +168,8 @@
                     name: name,
                     price: price,
                     date: date,
-                    status: 1
+                    status: 1,
+                    date_update: '-'
                 },
                 success : function(res) {
                     console.log(res)
@@ -175,10 +177,8 @@
                         console.log("res == 1")
                         $('#add_error').css("display", "");
                     } else {
-                        console.log("else")
                         add_product()
-                        // $('.alert').hide();
-                        console.log($('.alert'))
+                        $('.alert').hide();
                         $('#insert_name').val('');
                         $('#insert_price').val('');
                         $('#insert_date').val('');
@@ -191,7 +191,10 @@
         }
 
         function edit_product(id) {
-            $.ajax({url: `http://localhost:8000/api/insertproductByid/${id}`, success: function(product){
+            $.ajax({
+                url: `http://localhost:8000/api/insertproductByid/${id}`,
+
+                success: function(product){
                 console.log(product);
                 $('#id').val(product.id);
                 $('#name').val(product.name);
@@ -205,6 +208,10 @@
             let name = $('#name').val();
             let price = $('#price').val();
             let date = $('#date').val();
+            let dt = new Date();
+            let day = dt.getDate()+'/'+(dt.getMonth()+ 1)+'/'+(dt.getFullYear()+ 543);
+            let time = dt.getHours()+':'+dt.getMinutes()+':'+dt.getSeconds();
+            let date_update = day + ' '+ time;
             $.ajax({
                 url: `/update_productByid`,
                 type : "PUT",
@@ -213,6 +220,7 @@
                     name: name,
                     price: price,
                     date: date,
+                    date_update: date_update,
                 },
                 success : function() {
                     add_product()
@@ -251,6 +259,13 @@
         }
 
         $(document).ready(function() {
+
+            // $('#insert_date').datetimepicker({
+            //     timepicker:false,
+            //     lang:'th',  // แสดงภาษาไทย
+            //     yearOffset:543,  // ใช้ปี พ.ศ. บวก 543 เพิ่มเข้าไปในปี ค.ศ
+            //     inline:true
+            // });
 
             $('#select_all').on('click', function() {
                 console.log(this)

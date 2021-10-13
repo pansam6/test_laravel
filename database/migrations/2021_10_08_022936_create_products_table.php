@@ -15,9 +15,10 @@ class CreateProductsTable extends Migration
     {
         Schema::create('products', function (Blueprint $table) {
             $table->id();
-            $table->string("name");
-            $table->float("price");
+            $table->string("name"); //ชื่อสินค้า
+            $table->float("price"); //ราคาสินค้า
             $table->date("date");
+            $table->string("date_update"); //วันที่อัพเดทข้อมูลสินค้า
             $table->integer("status");
             $table->timestamps();
         });
