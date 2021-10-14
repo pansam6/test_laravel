@@ -23,4 +23,3 @@ Route::get('/get_product', [Productcontroller::class,'get_product']);
 Route::put('/update_productByid', [Productcontroller::class,'update_productByid']);
 
 Route::get('/login', [LoginController::class, 'login']);
-Route::post('/singin', [LoginController::class, 'singin']);

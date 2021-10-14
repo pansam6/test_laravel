@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\product;
 use Carbon\Carbon;
+use Carbon\CarbonImmutable;
 use GrahamCampbell\ResultType\Success;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -13,6 +14,12 @@ class Productcontroller extends Controller
 {
 
     public function product(){
+        $arr = [];
+        $arr["carbon"] = Carbon::now();
+        $arr["carbonadd"] =  $arr["carbon"]->add(1, 'day');
+        $arr["carbonadd2"] =  Carbon::now()->add(1, 'day');
+        $arr["carbonformat"] =  Carbon::createFromFormat('d-mooY', '13-10oo2540');
+
         $products = Product::all();
         return view('welcome', ['products' => $products]);
     }
@@ -36,7 +43,6 @@ class Productcontroller extends Controller
             $product->name = $request->name;
             $product->price = $request->price;
             $product->date = $request->date;
-            $product->date_update = $request->date_update;
             $product->status = $request->status;
             $product->save();
             return $product;
@@ -73,7 +79,6 @@ class Productcontroller extends Controller
         $product->name = $request->name;
         $product->price = $request->price;
         $product->date = $request->date;
-        $product->date_update = $request->date_update;
         $product->save();
         return 1;
     }

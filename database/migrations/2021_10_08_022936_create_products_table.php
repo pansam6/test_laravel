@@ -18,7 +18,6 @@ class CreateProductsTable extends Migration
             $table->string("name"); //ชื่อสินค้า
             $table->float("price"); //ราคาสินค้า
             $table->date("date");
-            $table->string("date_update"); //วันที่อัพเดทข้อมูลสินค้า
             $table->integer("status");
             $table->timestamps();
         });

@@ -12,6 +12,10 @@
 </head>
 <body>
 
+    <?php
+        use Carbon\Carbon;
+    ?>
+
     <!-- Add Modal -->
     <div class="modal fade" id="addModal" tabindex="-1" aria-labelledby="addModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -99,21 +103,22 @@
             </thead>
             <tbody>
                 @foreach ($products as $product)
-                <tr>
-                    <th>
-                        <div class="form-check">
-                            <input class="checkbox form-check-input" type="checkbox" id="checkbox_dalete" value="{{$product->id}}">
-                        </div>
-                    </th>
-                    <th>{{$product->status}}</th>
-                    <th>{{$product->id}}</th>
-                    <td>{{$product->name}}</td>
-                    <td>{{$product->price}}</td>
-                    <td >{{ \Carbon\Carbon::now()->toDateString() }}</td>
-                    {{-- date('d/m/Y', strtotime($product->date)) --}}
-                    <td>{{$product->date_update}}</td>
-                    <td><button type="button" class="btn btn-success" onclick="edit_product({{$product->id}})" data-bs-toggle="modal" data-bs-target="#editModal">Edit</button></td>
-                </tr>
+                    @if ($product->status == 1)
+                        <tr>
+                            <th>
+                                <div class="form-check">
+                                    <input class="checkbox form-check-input" type="checkbox" id="checkbox_dalete" value="{{$product->id}}">
+                                </div>
+                            </th>
+                            <th>{{$product->status}}</th>
+                            <th>{{$product->id}}</th>
+                            <td>{{$product->name}}</td>
+                            <td>{{$product->price}}</td>
+                            <td >{{Carbon::createFromFormat('Y-m-d', $product->date)->addYears(543)->isoFormat('D/M/Y')}}</td>
+                            <td>{{$product->updated_at->addYears(543)->format('d/m/Y H:i:s')}}</td>
+                            <td><button type="button" class="btn btn-success" onclick="edit_product({{$product->id}})" data-bs-toggle="modal" data-bs-target="#editModal">Edit</button></td>
+                        </tr>
+                    @endif
                 @endforeach
             </tbody>
         </table>
@@ -135,23 +140,26 @@
                     console.log(res)
                     $('table tbody').empty()
                     for (let x of res) {
-                        let date = new Date(x.date)
-                        $('table tbody').append(`
-                        <tr>
-                            <th>
-                                <div class="form-check">
-                                    <input class="checkbox form-check-input" type="checkbox" name="check[]" value="${x.id}">
-                                </div>
-                            </th>
-                            <th>${x.status}</th>
-                            <th>${x.id}</th>
-                            <td>${x.name}</td>
-                            <td>${x.price}</td>
-                            <td>${date.getDate()}/${date.getMonth()+1}/${date.getFullYear()+543}</td>
-                            <td>${x.date_update}</td>
-                            <td><button type="button" class="btn btn-success" onclick="edit_product(${x.id})" data-bs-toggle="modal" data-bs-target="#editModal">Edit</button></td>
-                        </tr>
-                        `)
+                        if (x.status == 1) {
+                            let date = new Date(x.date)
+                            let date_update = new Date(x.updated_at)
+                            $('table tbody').append(`
+                            <tr>
+                                <th>
+                                    <div class="form-check">
+                                        <input class="checkbox form-check-input" type="checkbox" name="check[]" value="${x.id}">
+                                    </div>
+                                </th>
+                                <th>${x.status}</th>
+                                <th>${x.id}</th>
+                                <td>${x.name}</td>
+                                <td>${x.price}</td>
+                                <td>${date.getDate()}/${date.getMonth()+1}/${date.getFullYear()+543}</td>
+                                <td>${date_update.getDate()}/${date_update.getMonth()+1}/${date_update.getFullYear()+543} ${date_update.getHours()+1}:${date_update.getMinutes()}:${date_update.getSeconds()}</td>
+                                <td><button type="button" class="btn btn-success" onclick="edit_product(${x.id})" data-bs-toggle="modal" data-bs-target="#editModal">Edit</button></td>
+                            </tr>
+                            `)
+                        }
                     }
                 }
             })
@@ -161,6 +169,7 @@
             let name = $('#insert_name').val();
             let price = $('#insert_price').val();
             let date = $('#insert_date').val();
+            console.log('1')
             $.ajax({
                 url :  "/add_product",
                 type : "POST",
@@ -177,6 +186,7 @@
                         console.log("res == 1")
                         $('#add_error').css("display", "");
                     } else {
+                        console.log('22')
                         add_product()
                         $('.alert').hide();
                         $('#insert_name').val('');
@@ -185,7 +195,6 @@
                         $('.modal').modal('hide'),
                         Swal.fire('Good job!','You clicked the button!','success')
                     };
-                    console.log(res)
                 }
             });
         }
@@ -220,7 +229,6 @@
                     name: name,
                     price: price,
                     date: date,
-                    date_update: date_update,
                 },
                 success : function() {
                     add_product()
