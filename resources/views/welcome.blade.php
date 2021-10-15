@@ -16,6 +16,9 @@
         use Carbon\Carbon;
     ?>
 
+
+
+
     <!-- Add Modal -->
     <div class="modal fade" id="addModal" tabindex="-1" aria-labelledby="addModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -81,6 +84,19 @@
     </div>
 
     <div class="container" style="margin-top: 50px">
+
+        <div class="row justify-content-end mt-4">
+            <div class="col-3 d-flex flex-row justify-content-end">
+                @if(!session()->has('user'))   {{-- ถ้าไม่มีข้อมูล user --}}
+                    <a href="/login" >login</a>
+                @endif
+                @if(session()->has('user'))
+                    <span>{{session()->get('user')->name}}</span>
+                    <a href="/logout" style="margin-left: 10px">logout</a>
+                @endif
+            </div>
+        </div>
+
         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModal">Add</button>
         <button type="button" class="btn btn-danger" onclick="delete_product()">Delete</button>
         <table class="table">

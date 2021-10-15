@@ -14,7 +14,15 @@ class LoginController extends Controller
 {
     public function login() {
         $user = User::all();
+        if (session()->has("user")) { //เช็คว่ามี ข้อมูลชื่อ user ไหม
+            return back();
+        }
         return view('login', ['user' => $user]);
+    }
+
+    public function logout() {
+        session()->flush(); //ลบข้อมูล session all
+        return redirect('/login');
     }
 
     public function signin(Request $request) {
@@ -46,6 +54,7 @@ class LoginController extends Controller
             $user = User::where('email', $request->email)->get();
 
             if($user[0]->password == $request->password) {
+                session()->put('user', $user[0]); //เพิ่มขอ้มูล user
                 return response()->json(action([Productcontroller::class, 'product']));
             } else {
                 return 1;
