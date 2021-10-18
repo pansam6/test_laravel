@@ -15,7 +15,7 @@ use App\Http\Controllers\Productcontroller;
 |
 */
 
-Route::get('/', [Productcontroller::class, 'product']);
+Route::get('/login/product', [Productcontroller::class, 'product']);
 Route::post('/add_product', [Productcontroller::class,'add_product']);
 Route::post('/update_product', [Productcontroller::class,'update_product']);
 Route::post('/delete_product', [Productcontroller::class,'delete_product']);

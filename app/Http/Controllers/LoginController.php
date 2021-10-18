@@ -54,7 +54,7 @@ class LoginController extends Controller
             $user = User::where('email', $request->email)->get();
 
             if($user[0]->password == $request->password) {
-                session()->put('user', $user[0]); //เพิ่มขอ้มูล user
+                session()->put('user', $user[0]); //เพิ่มข้อมูล user
                 return response()->json(action([Productcontroller::class, 'product']));
             } else {
                 return 1;

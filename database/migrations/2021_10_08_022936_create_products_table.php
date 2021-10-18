@@ -19,6 +19,7 @@ class CreateProductsTable extends Migration
             $table->float("price"); //ราคาสินค้า
             $table->date("date");
             $table->integer("status");
+            $table->string("user_update");
             $table->timestamps();
         });
     }

@@ -93,7 +93,7 @@
                         $('#alert_sign').css("display", "")
                     } else {
                         $('.modal').modal('hide')
-                        Swal.fire('Good job!','ลบสำเร็จ','success')
+                        Swal.fire('Good job!','สำเร็จ','success')
                     }
                     console.log(res)
                 }

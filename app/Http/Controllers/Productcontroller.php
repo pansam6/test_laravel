@@ -14,14 +14,19 @@ class Productcontroller extends Controller
 {
 
     public function product(){
-        $arr = [];
-        $arr["carbon"] = Carbon::now();
-        $arr["carbonadd"] =  $arr["carbon"]->add(1, 'day');
-        $arr["carbonadd2"] =  Carbon::now()->add(1, 'day');
-        $arr["carbonformat"] =  Carbon::createFromFormat('d-mooY', '13-10oo2540');
-
-        $products = Product::all();
-        return view('welcome', ['products' => $products]);
+        // $arr = [];
+        // $arr["carbon"] = Carbon::now();
+        // $arr["carbonadd"] =  $arr["carbon"]->add(1, 'day');
+        // $arr["carbonadd2"] =  Carbon::now()->add(1, 'day');
+        // $arr["carbonformat"] =  Carbon::createFromFormat('d-mooY', '13-10oo2540');
+        // dd(session()->get('user'));
+        if(!session()->has('user')) {
+            return redirect('login');
+        }
+        if(session()->has('user')) {
+            $products = Product::all();
+            return view('welcome', ['products' => $products]);
+        }
     }
 
     public function get_product() {
@@ -44,8 +49,9 @@ class Productcontroller extends Controller
             $product->price = $request->price;
             $product->date = $request->date;
             $product->status = $request->status;
+            $product->user_update = $request->user_update;
             $product->save();
-            return $product;
+            return $request;
         }
 
     }
@@ -79,8 +85,9 @@ class Productcontroller extends Controller
         $product->name = $request->name;
         $product->price = $request->price;
         $product->date = $request->date;
+        $product->user_update = $request->user_update;
         $product->save();
-        return 1;
+        return $request;
     }
 }
 

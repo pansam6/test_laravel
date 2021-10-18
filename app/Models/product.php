@@ -23,6 +23,7 @@ class product extends Model
         'date',
         'status',
         'created_at',
+        'user_update',
     ];
 
     /**

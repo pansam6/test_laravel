@@ -114,6 +114,7 @@
                 <th scope="col">Price</th>
                 <th scope="col">Date</th>
                 <th scope="col">Date update</th>
+                <th scope="col">User update</th>
                 <th scope="col">Edit</th>
             </tr>
             </thead>
@@ -132,6 +133,7 @@
                             <td>{{$product->price}}</td>
                             <td >{{Carbon::createFromFormat('Y-m-d', $product->date)->addYears(543)->isoFormat('D/M/Y')}}</td>
                             <td>{{$product->updated_at->addYears(543)->format('d/m/Y H:i:s')}}</td>
+                            <td>{{$product->user_update}}</td>
                             <td><button type="button" class="btn btn-success" onclick="edit_product({{$product->id}})" data-bs-toggle="modal" data-bs-target="#editModal">Edit</button></td>
                         </tr>
                     @endif
@@ -153,7 +155,7 @@
                 url: "/get_product",
                 type: "GET",
                 success: (res) => {
-                    console.log(res)
+                    // console.log(res)
                     $('table tbody').empty()
                     for (let x of res) {
                         if (x.status == 1) {
@@ -172,6 +174,7 @@
                                 <td>${x.price}</td>
                                 <td>${date.getDate()}/${date.getMonth()+1}/${date.getFullYear()+543}</td>
                                 <td>${date_update.getDate()}/${date_update.getMonth()+1}/${date_update.getFullYear()+543} ${date_update.getHours()+1}:${date_update.getMinutes()}:${date_update.getSeconds()}</td>
+                                <td>${x.user_update}</td>
                                 <td><button type="button" class="btn btn-success" onclick="edit_product(${x.id})" data-bs-toggle="modal" data-bs-target="#editModal">Edit</button></td>
                             </tr>
                             `)
@@ -185,7 +188,6 @@
             let name = $('#insert_name').val();
             let price = $('#insert_price').val();
             let date = $('#insert_date').val();
-            console.log('1')
             $.ajax({
                 url :  "/add_product",
                 type : "POST",
@@ -194,15 +196,14 @@
                     price: price,
                     date: date,
                     status: 1,
-                    date_update: '-'
+                    user_update: '-'
                 },
                 success : function(res) {
                     console.log(res)
                     if(res == 1) {
-                        console.log("res == 1")
                         $('#add_error').css("display", "");
                     } else {
-                        console.log('22')
+                        console.log(res)
                         add_product()
                         $('.alert').hide();
                         $('#insert_name').val('');
@@ -237,6 +238,7 @@
             let day = dt.getDate()+'/'+(dt.getMonth()+ 1)+'/'+(dt.getFullYear()+ 543);
             let time = dt.getHours()+':'+dt.getMinutes()+':'+dt.getSeconds();
             let date_update = day + ' '+ time;
+            let user_update = {!!session()->get('user')!!}
             $.ajax({
                 url: `/update_productByid`,
                 type : "PUT",
@@ -245,8 +247,10 @@
                     name: name,
                     price: price,
                     date: date,
+                    user_update: user_update.name,
                 },
-                success : function() {
+                success : function(res) {
+                    console.log(res)
                     add_product()
                     $('.modal').modal('hide'),
                      Swal.fire('Good job!','You clicked the button!','success')
