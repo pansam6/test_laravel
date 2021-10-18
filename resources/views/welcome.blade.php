@@ -149,7 +149,9 @@
 
     <script>
 
-        $('#sandbox-container').datepicker();
+        $('#sandbox-container').datepicker({
+            defaultViewDate: {year: '2564'}
+        });
 
         $.ajaxSetup({
         headers: {
