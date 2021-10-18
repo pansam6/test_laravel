@@ -7,6 +7,9 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-uWxY/CJNBR+1zjPWmfnSnVxwRheevXITnMqoEIeG1LJrdI0GlVs/9cVSyPYXdcSF" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-kQtW33rZJAHjgefvhyyzcGF3C5TFyBQBA13V1RKPf4uH+bwyzQxZ6CmMZHmNBEfJ" crossorigin="anonymous"></script>
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <link rel="stylesheet" href="{{asset('asset/datepicker/css/bootstrap-datepicker.standalone.min.css')}}">
+
     <meta name="csrf-token" content="{{ csrf_token() }}" />
     <title>test</title>
 </head>
@@ -15,9 +18,6 @@
     <?php
         use Carbon\Carbon;
     ?>
-
-
-
 
     <!-- Add Modal -->
     <div class="modal fade" id="addModal" tabindex="-1" aria-labelledby="addModalLabel" aria-hidden="true">
@@ -85,6 +85,8 @@
 
     <div class="container" style="margin-top: 50px">
 
+        <input type="text" id="sandbox-container" class="form-control">
+
         <div class="row justify-content-end mt-4">
             <div class="col-3 d-flex flex-row justify-content-end">
                 @if(!session()->has('user'))   {{-- ถ้าไม่มีข้อมูล user --}}
@@ -143,7 +145,12 @@
     </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="{{asset('asset/datepicker/js/bootstrap-datepicker.min.js')}}"></script>
+
     <script>
+
+        $('#sandbox-container').datepicker();
+
         $.ajaxSetup({
         headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
